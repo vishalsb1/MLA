@@ -1,35 +1,41 @@
 # MLA
+```
+ACCORDING TO ORAL DOC
+```
+Implementation of knn using py
 
-Assignment no 1
+```
+import numpy as np
+from collections import Counter
 
-`import pandas as pd
-df pd.read_csv('loandata.csv')
-df.head()
-df.info()
-import seaborn as sns
-import matplotlib.pyplot as plt
-sns.countplot(data=df, x='purpose', hue='not.fully.paid')
-plt.xticks (rotation=45, ha='right');
-pre_df = pd.get_dummies (df, columns=['purpose'], drop_first=True)
-pre_df.head()
-from sklearn.model_selection import train_test_split
-X = pre_df.drop('not.fully.paid', axis=1)
-y = pre_df['not.fully.paid']
-X_train, X_test, y_train, y_test train_test_split(
-X, y, test_size=0.33, random_state=125
-)
-from sklearn.naive_bayes import GaussianNB
-model=GaussianNB().
-model.fit(X_train, y_train);
-from sklearn.metrics import (
-accuracy_score, confusion_matrix, ConfusionMatrixDisplay, f1_score, classification_report,
-)
-y_pred= model.predict(X_test)
-accuray accuracy_score (y_pred, y_test)
-f1f1_score(y_pred, y_test, average="weighted")
-print("Accuracy:", accuray)
-print("F1 Score:", f1)
-labels = ["Fully Paid", "Not fully Paid"]
-cm confusion_matrix(y_test, y_pred)
-disp ConfusionMatrixDisplay (confusion_matrix=cm, display_labels=labels)
-disp.plot();`
+class KNNClassifier:
+    def __init__(self, k=3):
+        self.k = k
+
+    def fit(self, X, y):
+        self.X_train = X
+        self.y_train = y
+
+    def predict(self, X):
+        predictions = [self._predict(x) for x in X]
+        return np.array(predictions)
+
+    def _predict(self, x):
+        distances = [np.linalg.norm(x - x_train) for x_train in self.X_train]
+        k_indices = np.argsort(distances)[:self.k]
+        k_nearest_labels = [self.y_train[i] for i in k_indices]
+        most_common = Counter(k_nearest_labels).most_common(1)
+        return most_common[0][0]
+
+# Example usage:
+X_train = np.array([[1, 2], [1.5, 1.8], [5, 8], [8, 8], [1, 0.6], [9, 11]])
+y_train = np.array([0, 0, 1, 1, 0, 1])
+
+knn = KNNClassifier(k=3)
+knn.fit(X_train, y_train)
+
+X_test = np.array([[3, 4], [5, 5], [0, 0]])
+predictions = knn.predict(X_test)
+print("Predictions:", predictions)
+```
+
